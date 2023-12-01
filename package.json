@@ -7,5 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/callsite": "^1.0.34",
+    "@types/node": "^20.10.1"
+  },
+  "dependencies": {
+    "callsite": "^1.0.0",
+    "parent-module": "^3.1.0"
+  }
 }
