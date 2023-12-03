@@ -15,3 +15,7 @@ export async function readFileByLine(filename: string, callback: (line: string) 
     await callback(line);
   }
 }
+
+export function isNumeric(s: string): boolean {
+  return /^\d+$/.test(s);
+}

@@ -1,8 +1,4 @@
-import {readFileByLine} from "../util";
-
-function isNumeric(s: string): boolean {
-  return /^\d+$/.test(s);
-}
+import {readFileByLine, isNumeric} from "../util";
 
 let sum = 0;
 
