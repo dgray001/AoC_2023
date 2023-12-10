@@ -42,7 +42,6 @@ readFileByLine('input', async (line: string) => {
   }
   curr.y++;
 }).then(() => {
-  console.log(pipes);
   const steps: string[] = [];
   const last_dir: P2D = {x: 0, y: 0};
   curr.x = start.x;
