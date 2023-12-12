@@ -1,3 +1,3 @@
 Advent of Code 2023
 
-Day11: solutions
+Day12: solutions
