@@ -127,7 +127,7 @@ function andCondition(bounds: BoundData[], con: string): BoundData[] {
   return new_bounds;
 }
 
-readFileByLine('input_test', async (line: string) => {
+readFileByLine('input', async (line: string) => {
   if (!line) {
     return;
   }

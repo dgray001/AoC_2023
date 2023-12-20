@@ -1,3 +1,3 @@
 Advent of Code 2023
 
-Day19: solutions
+Day20: solutions
