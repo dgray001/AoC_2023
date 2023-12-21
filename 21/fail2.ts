@@ -6,7 +6,7 @@ const start: P2D = {x: -1, y: -1};
 
 let j = 0;
 
-readFileByLine('input', async (line: string) => {
+readFileByLine('input_test', async (line: string) => {
   if (!line) {
     return;
   }
@@ -26,7 +26,17 @@ readFileByLine('input', async (line: string) => {
   seen.add(JSON.stringify(start));
   let visited = 0;
   let q: P2D[] = [start];
-  for (let step = 0; step <= 64; step++) {
+  const steps = 5000;
+  const incs: number[] = [];
+  for (let step = 0; step <= steps; step++) {
+    if (step > 4 * map.length && step % (2 * map.length) === 0) {
+      console.log(visited / (step * step));
+      console.log(step);
+      if (incs.length === 3) {
+        console.log(incs);
+        return;
+      }
+    }
     const next_q: P2D[] = [];
     const add = step % 2 === 0;
     for (const p of q) {
@@ -35,18 +45,18 @@ readFileByLine('input', async (line: string) => {
       }
       for (const move of [{x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 0, y: -1}]) {
         const n = {x: p.x + move.x, y: p.y + move.y};
-        if (n.x < 0 || n.y < 0 || n.x >= map[0].length || n.y >= map.length) {
-          continue;
-        }
+        const orig_n = {x: n.x, y: n.y};
         const k = JSON.stringify(n);
         if (seen.has(k)) {
           continue;
         }
+        n.x = (n.x % map[0].length + map[0].length) % map[0].length;
+        n.y = (n.y % map.length + map.length) % map.length;
         seen.add(k);
         if (map[n.y][n.x] === '#') {
           continue;
         }
-        next_q.push(n);
+        next_q.push(orig_n);
       }
     }
     q = next_q;
