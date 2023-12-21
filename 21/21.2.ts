@@ -9,7 +9,7 @@ let j = 0;
 interface QueueData {
   p1: P2D;
   p2: P2D;
-  n: number;
+  d: number;
 }
 
 readFileByLine('input', async (line: string) => {
@@ -29,10 +29,9 @@ readFileByLine('input', async (line: string) => {
   j++;
 }).then(() => {
   const distances = new Map<string, number>();
-  const q: QueueData[] = [{p1: {x: 0, y: 0}, p2: start, n: 0}];
+  const q: QueueData[] = [{p1: {x: 0, y: 0}, p2: start, d: 0}];
   const w = map.length; // square
-  const fill_squares_radius = 2; // failed for < 2
-  // fill up all distances of original square and fill_squares_radius squares out
+  // fill up all distances of original square and 8 adjacent periods
   while (q.length > 0) {
     const qd = q.shift();
     if (qd.p2.x < 0) {
@@ -53,21 +52,22 @@ readFileByLine('input', async (line: string) => {
       continue;
     }
     const k = JSON.stringify({p1: qd.p1, p2: qd.p2});
-    if (Math.abs(qd.p1.x) > fill_squares_radius || Math.abs(qd.p1.y) > fill_squares_radius) {
+    if (Math.abs(qd.p1.x) > 1 || Math.abs(qd.p1.y) > 1) {
       continue;
     }
     if (distances.has(k)) {
       continue;
     }
-    distances.set(k, qd.n);
+    distances.set(k, qd.d);
     for (const move of [{x: 1, y: 0}, {x: 0, y: 1}, {x: -1, y: 0}, {x: 0, y: -1}]) {
       q.push({
         p1: {x: qd.p1.x, y: qd.p1.y},
         p2: {x: qd.p2.x + move.x, y: qd.p2.y + move.y},
-        n: qd.n + 1,
+        d: qd.d + 1,
       });
     }
   }
+  // need to cache these calculations since they are expensive
   const solve_cache = new Map<string, number>();
   function solve(dis: number, edges: number, steps: number): number {
     const amt = Math.floor((steps - dis) / map.length);
@@ -79,7 +79,7 @@ readFileByLine('input', async (line: string) => {
     for (let x = 1; x <= amt; x++) {
       const c = dis + map.length * x;
       if (c <= steps && c % 2 === steps % 2) {
-        result += edges === 2 ? x + 1 : 1;
+        result += edges === 2 ? x + 1 : 1; // quadratic for four corner periods, linear for 4 edges
       }
     }
     solve_cache.set(k, result);
@@ -87,20 +87,21 @@ readFileByLine('input', async (line: string) => {
   }
   const steps = 26501365;
   let answer = 0;
+  // essentially 
   for (let x = 0; x < map.length; x++) {
     for (let y = 0; y < map.length; y++) {
       const k = JSON.stringify({p1: {x: 0, y: 0}, p2: {x, y}});
       if (!distances.has(k)) {
         continue;
       }
-      for (let tx = - fill_squares_radius + 1; tx <= fill_squares_radius - 1; tx++) {
-        for (let ty = - fill_squares_radius + 1; ty <= fill_squares_radius - 1; ty++) {
+      for (let tx = -1; tx <= 1; tx++) {
+        for (let ty = -1; ty <= 1; ty++) {
           const dis = distances.get(JSON.stringify({p1: {x: tx, y: ty}, p2: {x, y}}))
           if (dis % 2 === steps % 2 && dis <= steps) {
-            answer++; // directly count the ones in the fill_squares_radius
+            answer++; // directly count the ones in the 9 center periods
           }
-          const edge_x = Math.abs(tx) === fill_squares_radius - 1;
-          const edge_y = Math.abs(ty) === fill_squares_radius - 1;
+          const edge_x = Math.abs(tx) === 1;
+          const edge_y = Math.abs(ty) === 1;
           if (edge_x && edge_y) {
             answer += solve(dis, 2, steps);
           } else if (edge_x || edge_y) {
