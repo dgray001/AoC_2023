@@ -1,6 +1,6 @@
 import {readFileByLine} from "../util";
 
-readFileByLine('input', async (line: string) => {
+readFileByLine('input_test', async (line: string) => {
   if (!line) {
     return;
   }

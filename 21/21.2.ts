@@ -77,9 +77,12 @@ readFileByLine('input', async (line: string) => {
     }
     let result = 0;
     for (let x = 1; x <= amt; x++) {
-      const c = dis + map.length * x;
-      if (c <= steps && c % 2 === steps % 2) {
-        result += edges === 2 ? x + 1 : 1; // quadratic for four corner periods, linear for 4 edges
+      const total_dis = dis + map.length * x;
+      if (total_dis <= steps && total_dis % 2 === steps % 2) {
+        result++;
+        if (edges === 2) {
+          result += x; // quadratic for 4 corner periods
+        }
       }
     }
     solve_cache.set(k, result);
