@@ -12,7 +12,9 @@ export async function readFileByLine(filename: string, callback: (line: string) 
   });
   
   for await (const line of rl) {
-    await callback(line);
+    if (!!line) {
+      await callback(line);
+    }
   }
 }
 
@@ -102,5 +104,125 @@ export class PriorityQueue<T> {
 
   private greater(i: number, j: number): boolean {
     return this.comparator(this.heap[i], this.heap[j]);
+  }
+}
+
+class Element<T> {
+  // A property to store the data
+  private _value: T;
+  public get value(): T {
+    return this._value;
+  }
+  public set value(v: T) {
+    this._value = v;
+  }
+
+  // A property to store pointer to the next element
+  private _next: Element<T>;
+  public get next(): Element<T> {
+    return this._next;
+  }
+  public set next(v: Element<T>) {
+    this._next = v;
+  }
+
+  constructor(val: T) {
+    this._value = val;
+    this._next = null;
+  }
+}
+
+// from https://medium.com/@konduruharish/queue-in-typescript-and-c-cbd936564a42
+export class Queue<T> {
+  // Property to hold a reference to the first element in the queue.
+  private _first: Element<T>;
+  public get first(): Element<T> {
+    return this._first;
+  }
+  public set first(elem: Element<T>) {
+    this._first = elem;
+  }
+
+  // Property to hold a reference to the last element in the queue.
+  private _last: Element<T>;
+  public get last(): Element<T> {
+    return this._last;
+  }
+  public set last(elem: Element<T>) {
+    this._last = elem;
+  }
+
+  // Property to hold the total number of element in the queue.
+  private _size: number;
+  public get size(): number {
+    return this._size;
+  }
+  public set size(v: number) {
+    this._size = v;
+  }
+
+  /**
+   * Creates a new instance of Queue with 0 elements in it.
+   */
+  constructor() {
+    this._first = null;
+    this._last = null;
+    this.size = 0;
+  }
+
+  /**
+   * Adds a new element to the end of the queue.
+   * @param value Returns the success of the operation
+  */
+  Enqueue(value: T): boolean {
+    // Create a new element with the given value
+    const newElement = new Element(value);
+
+    if (this._size == 0) {
+      // If queue is empty, first and last will be the same.
+      this._first = newElement;
+      this._last = newElement;
+    } else {
+      // Add the element at the end of the linked list
+      this._last.next = newElement;
+      this._last = newElement;
+    }
+
+    // Increment the size by 1
+    this._size++;
+
+    // return
+    return true;
+  }
+
+  /**
+  * Removes an element from the beginning of the queue and returns its value
+  */
+  Dequeue(): T {
+    // If queue is empty, return null
+    if (this._size == 0) return null;
+
+    // Save the value to a temp variable
+    let prevFirst = this._first;
+
+    // Reset the first element to the next in line
+    this._first = prevFirst.next;
+
+    // Remove the previour first node from the queue
+    prevFirst.next = null;
+
+    // Decrement the size of the queue
+    this._size--;
+
+    // Return
+    return prevFirst.value;
+  }
+
+  peek(): T {
+    if(this._size === 0) {
+      return null;
+    }
+     
+    return this._first.value;
   }
 }
