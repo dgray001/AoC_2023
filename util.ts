@@ -25,6 +25,12 @@ export declare interface P2D {
   y: number;
 }
 
+export declare interface P3D {
+  x: number;
+  y: number;
+  z: number;
+}
+
 /** Uses a binary heap (https://stackoverflow.com/a/42919752) */
 export class PriorityQueue<T> {
   private static top = 0;

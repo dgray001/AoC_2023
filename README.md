@@ -1,3 +1,3 @@
 Advent of Code 2023
 
-Day21: solutions cleanup
+Day22: solutions
